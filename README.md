@@ -35,3 +35,9 @@
 2. [前端webpack](http://itanguo.cn/?p=195)
 3. [Webpack 入门指迷](http://segmentfault.com/a/1190000002551952)
 4. [Webpack 怎么用](http://segmentfault.com/a/1190000002552008)
+
+
+TODO:
+* 去除jquery (tab切换,下拉菜单)
+* 数据集中处理,预计redux
+* 模块化
