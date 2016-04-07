@@ -131,33 +131,33 @@ let Login = React.createClass({
                 successCallback ? successCallback() : 0;
                 loginInit ? loginInit() : 0;
                 callback();
-            },
-            loginFaile: (ret, dec) => {
-                this.setState({
-                    show: 'login',
-                    tip: 'show',
-                    tipTxt: dec
-                });
-            },
-            registerSuccess: (ret, dec) => {
-                this.setState({
-                    show: 'hidden',
-                    tip: 'hidden'
-                });
-                let pw = $(_wrap + ' .login_box .pw').attr('value');
-                loginHost.LogIn(ret, false, true, pw);
-            },
-            registerFaile: (ret, dec) => {
-                this.setState({
-                    tip: 'show',
-                    tipTxt: dec
-                });
             }
+            // loginFaile: (ret, dec) => {
+            //     this.setState({
+            //         show: 'login',
+            //         tip: 'show',
+            //         tipTxt: dec
+            //     });
+            // }
+            // registerSuccess: (ret, dec) => {
+            //     this.setState({
+            //         show: 'hidden',
+            //         tip: 'hidden'
+            //     });
+            //     let pw = $(_wrap + ' .login_box .pw').attr('value');
+            //     loginHost.LogIn(ret, false, true, pw);
+            // },
+            // registerFaile: (ret, dec) => {
+            //     this.setState({
+            //         tip: 'show',
+            //         tipTxt: dec
+            //     });
+            // }
         };
         loginHost.loginSuccess.connect(_cb, 'loginSuccess');
-        loginHost.loginFailed.connect(_cb, 'loginFaile');
-        boxUserRegister.registerSuccess.connect(_cb, 'registerSuccess');
-        boxUserRegister.registerFailed.connect(_cb, 'registerFaile');
+        // loginHost.loginFailed.connect(_cb, 'loginFaile');
+        // boxUserRegister.registerSuccess.connect(_cb, 'registerSuccess');
+        // boxUserRegister.registerFailed.connect(_cb, 'registerFaile');
         // this.setState({
         //     ulist:loginInfoHelper.getHistoricalLoginUserList().userInfos
         // });

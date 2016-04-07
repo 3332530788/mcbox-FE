@@ -346,7 +346,7 @@ var SkinMod = React.createClass({
                         </div>
                     </div>
                     <div className="skin_box ">
-                        < Login ref='login' successCallback={this.getMySkin} loginInit={this.props.loginInit} _wrap='.mc_skin'/>
+                        < Login ref='login' successCallback={this.getMySkin} />
                         <CanvasSkin click={this.clickskin} skin={this.state.showSkin} myCanvas={this.state.myCanvas} handleFav={this.handleFav} delallSkin={this.delallSkin} type={this.state.limitty}/>
                         <SkinAll skin={this.state.allSkin} clickskin={clickskin} type={this.state.limitty} info={this.state.userInfo} />
                         <SkinMy skin={this.state.mySkin[this.state.limitty]} clickskin={clickskin} type={this.state.limitty} info={this.state.userInfo}/>

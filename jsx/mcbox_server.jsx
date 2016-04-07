@@ -273,7 +273,7 @@ var SevrGameBox = React.createClass({
             });
         return (
             <div className = {"sevr_body "+this.props.show} >
-                < Login ref='login' successCallback={this.ajaxMyserver} loginInit={this.props.loginInit} _wrap='.sevr_body'/>
+                < Login ref='login' successCallback={this.ajaxMyserver} />
                 <div className='hot_sevr' >{hotgame}</div>
                 <div className='mod_sevr' >{modgame}</div>
                 <div className='my_sevr' >{mygame}</div>
@@ -334,7 +334,9 @@ var McSideSelet = React.createClass({
         this.setState({nowlink:nowlink});
     },
     seleSevr: function(e) {
-        mcAction.showOnly($('.mylink_list'),this.props.index);
+        setTimeout(() => {
+            mcAction.showOnly($('.mylink_list'),this.props.index);
+        }, 100);
         return false;
     },
     render: function() {
@@ -366,7 +368,9 @@ var McSideSeletli = React.createClass({
 
 var McSideSetting = React.createClass({
     seleSetting: function(e) {
-        mcAction.showOnly($('.setting_list'),this.props.index);
+        setTimeout(() => {
+            mcAction.showOnly($('.setting_list'),this.props.index);
+        }, 100);
         return false;
     },
     render: function() {
@@ -538,7 +542,7 @@ let SevrBox = React.createClass({
                 < SevrShadow show={this.state.showshadow} txt={this.state.proTxt} />
                 < SevrDetal showdetal={this.state.showdetal} hiddenDetal={this.onHiddenDetal} obj={this.state.obj} />
                 < SevrNav data={this.state.data.sevrNav} click={this.handleClick}/>
-                < SevrGameBox ref='SevrGameBox' loginInit={this.props.loginInit} show={this.state.show} toDetal={this.toDetal} handleStart={this.handleStart} getAddress={this.props.getAddress} initSele={this.props.initSele}/>
+                < SevrGameBox ref='SevrGameBox' show={this.state.show} toDetal={this.toDetal} handleStart={this.handleStart} getAddress={this.props.getAddress} initSele={this.props.initSele}/>
             </section>
         );
     }

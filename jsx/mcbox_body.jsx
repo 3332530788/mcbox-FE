@@ -5,6 +5,7 @@ import ResourceBox from './mcbox_resource';
 import VideoBox from './mcbox_video';
 import SevrBox from './mcbox_server';
 import SkinBox from './mcbox_skin';
+import Login from './mcbox_login';
 
 //主体的导航栏
 var McNav = React.createClass({
@@ -50,7 +51,6 @@ var McMain = React.createClass({
     },
     render: function() {
         let {
-            loginInit,
             getAddress,
             linkSele,
             initSele,
@@ -68,13 +68,13 @@ var McMain = React.createClass({
                  _body = < RecomBox />;
                  break;
              case 'sevr':
-                 _body = < SevrBox loginInit={loginInit} getAddress={getAddress} linkSele={linkSele} initSele={initSele}  setStart={setStart}/>;
+                 _body = < SevrBox getAddress={getAddress} linkSele={linkSele} initSele={initSele}  setStart={setStart}/>;
                  break;
              case 'src':
                  _body = < ResourceBox />;
                  break;
              case 'skin':
-                 _body = < SkinBox loginInit={loginInit} />;
+                 _body = < SkinBox />;
                  break;
              case 'video':
                  _body = < VideoBox />;
@@ -221,11 +221,16 @@ var McSide = React.createClass({
         var link = $('.sver_sele').eq(1).attr('data-url');
         this.props.setStart(obj, link);
         this.props.showsrc('1', 'sevr');
+        if (!userProfile.userProfileJson().bid) {
+            this.refs.login.show(()=>{});
+            return false;
+        }
     },
     render: function() {
         var that = this;
         return (
             <div className='mc_side'>
+                < Login ref='login' successCallback={this.loginInit} />
                 <div className="user_info">
                     <div className="pic"><img src={this.state.user.big} width="66" height="66" alt="" /></div>
                     <div className="info">

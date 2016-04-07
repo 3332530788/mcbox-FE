@@ -732,33 +732,33 @@ return /******/ (function(modules) { // webpackBootstrap
 	                successCallback ? successCallback() : 0;
 	                loginInit ? loginInit() : 0;
 	                callback();
-	            },
-	            loginFaile: function loginFaile(ret, dec) {
-	                _this.setState({
-	                    show: 'login',
-	                    tip: 'show',
-	                    tipTxt: dec
-	                });
-	            },
-	            registerSuccess: function registerSuccess(ret, dec) {
-	                _this.setState({
-	                    show: 'hidden',
-	                    tip: 'hidden'
-	                });
-	                var pw = $(_wrap + ' .login_box .pw').attr('value');
-	                loginHost.LogIn(ret, false, true, pw);
-	            },
-	            registerFaile: function registerFaile(ret, dec) {
-	                _this.setState({
-	                    tip: 'show',
-	                    tipTxt: dec
-	                });
 	            }
+	            // loginFaile: (ret, dec) => {
+	            //     this.setState({
+	            //         show: 'login',
+	            //         tip: 'show',
+	            //         tipTxt: dec
+	            //     });
+	            // }
+	            // registerSuccess: (ret, dec) => {
+	            //     this.setState({
+	            //         show: 'hidden',
+	            //         tip: 'hidden'
+	            //     });
+	            //     let pw = $(_wrap + ' .login_box .pw').attr('value');
+	            //     loginHost.LogIn(ret, false, true, pw);
+	            // },
+	            // registerFaile: (ret, dec) => {
+	            //     this.setState({
+	            //         tip: 'show',
+	            //         tipTxt: dec
+	            //     });
+	            // }
 	        };
 	        loginHost.loginSuccess.connect(_cb, 'loginSuccess');
-	        loginHost.loginFailed.connect(_cb, 'loginFaile');
-	        boxUserRegister.registerSuccess.connect(_cb, 'registerSuccess');
-	        boxUserRegister.registerFailed.connect(_cb, 'registerFaile');
+	        // loginHost.loginFailed.connect(_cb, 'loginFaile');
+	        // boxUserRegister.registerSuccess.connect(_cb, 'registerSuccess');
+	        // boxUserRegister.registerFailed.connect(_cb, 'registerFaile');
 	        // this.setState({
 	        //     ulist:loginInfoHelper.getHistoricalLoginUserList().userInfos
 	        // });
@@ -859,6 +859,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _mcbox_skin2 = _interopRequireDefault(_mcbox_skin);
 
+	var _mcbox_login = __webpack_require__(10);
+
+	var _mcbox_login2 = _interopRequireDefault(_mcbox_login);
+
 	//主体的导航栏
 	var McNav = _react2['default'].createClass({
 	    displayName: 'McNav',
@@ -923,7 +927,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 	    render: function render() {
 	        var _props2 = this.props;
-	        var loginInit = _props2.loginInit;
 	        var getAddress = _props2.getAddress;
 	        var linkSele = _props2.linkSele;
 	        var initSele = _props2.initSele;
@@ -939,13 +942,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	                _body = _react2['default'].createElement(_mcbox_recommend2['default'], null);
 	                break;
 	            case 'sevr':
-	                _body = _react2['default'].createElement(_mcbox_server2['default'], { loginInit: loginInit, getAddress: getAddress, linkSele: linkSele, initSele: initSele, setStart: setStart });
+	                _body = _react2['default'].createElement(_mcbox_server2['default'], { getAddress: getAddress, linkSele: linkSele, initSele: initSele, setStart: setStart });
 	                break;
 	            case 'src':
 	                _body = _react2['default'].createElement(_mcbox_resource2['default'], null);
 	                break;
 	            case 'skin':
-	                _body = _react2['default'].createElement(_mcbox_skin2['default'], { loginInit: loginInit });
+	                _body = _react2['default'].createElement(_mcbox_skin2['default'], null);
 	                break;
 	            case 'video':
 	                _body = _react2['default'].createElement(_mcbox_video2['default'], null);
@@ -1111,12 +1114,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var link = $('.sver_sele').eq(1).attr('data-url');
 	        this.props.setStart(obj, link);
 	        this.props.showsrc('1', 'sevr');
+	        if (!userProfile.userProfileJson().bid) {
+	            this.refs.login.show(function () {});
+	            return false;
+	        }
 	    },
 	    render: function render() {
 	        var that = this;
 	        return _react2['default'].createElement(
 	            'div',
 	            { className: 'mc_side' },
+	            _react2['default'].createElement(_mcbox_login2['default'], { ref: 'login', successCallback: this.loginInit }),
 	            _react2['default'].createElement(
 	                'div',
 	                { className: 'user_info' },
@@ -3091,7 +3099,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return _react2['default'].createElement(
 	            'div',
 	            { className: "sevr_body " + this.props.show },
-	            _react2['default'].createElement(_mcbox_login2['default'], { ref: 'login', successCallback: this.ajaxMyserver, loginInit: this.props.loginInit, _wrap: '.sevr_body' }),
+	            _react2['default'].createElement(_mcbox_login2['default'], { ref: 'login', successCallback: this.ajaxMyserver }),
 	            _react2['default'].createElement(
 	                'div',
 	                { className: 'hot_sevr' },
@@ -3170,7 +3178,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.setState({ nowlink: nowlink });
 	    },
 	    seleSevr: function seleSevr(e) {
-	        mcAction.showOnly($('.mylink_list'), this.props.index);
+	        var _this3 = this;
+
+	        setTimeout(function () {
+	            mcAction.showOnly($('.mylink_list'), _this3.props.index);
+	        }, 100);
 	        return false;
 	    },
 	    render: function render() {
@@ -3217,7 +3229,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    displayName: 'McSideSetting',
 
 	    seleSetting: function seleSetting(e) {
-	        mcAction.showOnly($('.setting_list'), this.props.index);
+	        var _this4 = this;
+
+	        setTimeout(function () {
+	            mcAction.showOnly($('.setting_list'), _this4.props.index);
+	        }, 100);
 	        return false;
 	    },
 	    render: function render() {
@@ -3383,10 +3399,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	            dataType: 'jsonp',
 	            jsonpCallback: 'mc_addserver',
 	            success: (function (data) {
-	                var _this3 = this;
+	                var _this5 = this;
 
 	                setTimeout(function () {
-	                    _this3.refs.SevrGameBox.ajaxMyserver();
+	                    _this5.refs.SevrGameBox.ajaxMyserver();
 	                }, 1000);
 	            }).bind(this),
 	            error: (function (xhr, status, err) {}).bind(this)
@@ -3405,14 +3421,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.setState({ show: sort });
 	    },
 	    toDetal: function toDetal(obj) {
-	        var _this4 = this;
+	        var _this6 = this;
 
 	        //切换到服务器详情页
 	        this.setState({ showdetal: 'show' });
 	        this.setState({ obj: obj });
 	        this.props.linkSele(obj, true);
 	        setTimeout(function () {
-	            _this4.props.getAddress(obj, 'add');
+	            _this6.props.getAddress(obj, 'add');
 	        }, 1000);
 	    },
 	    onHiddenDetal: function onHiddenDetal() {
@@ -3426,7 +3442,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            _react2['default'].createElement(SevrShadow, { show: this.state.showshadow, txt: this.state.proTxt }),
 	            _react2['default'].createElement(SevrDetal, { showdetal: this.state.showdetal, hiddenDetal: this.onHiddenDetal, obj: this.state.obj }),
 	            _react2['default'].createElement(SevrNav, { data: this.state.data.sevrNav, click: this.handleClick }),
-	            _react2['default'].createElement(SevrGameBox, { ref: 'SevrGameBox', loginInit: this.props.loginInit, show: this.state.show, toDetal: this.toDetal, handleStart: this.handleStart, getAddress: this.props.getAddress, initSele: this.props.initSele })
+	            _react2['default'].createElement(SevrGameBox, { ref: 'SevrGameBox', show: this.state.show, toDetal: this.toDetal, handleStart: this.handleStart, getAddress: this.props.getAddress, initSele: this.props.initSele })
 	        );
 	    }
 	});
@@ -3841,7 +3857,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                _react2['default'].createElement(
 	                    'div',
 	                    { className: 'skin_box ' },
-	                    _react2['default'].createElement(_mcbox_login2['default'], { ref: 'login', successCallback: this.getMySkin, loginInit: this.props.loginInit, _wrap: '.mc_skin' }),
+	                    _react2['default'].createElement(_mcbox_login2['default'], { ref: 'login', successCallback: this.getMySkin }),
 	                    _react2['default'].createElement(CanvasSkin, { click: this.clickskin, skin: this.state.showSkin, myCanvas: this.state.myCanvas, handleFav: this.handleFav, delallSkin: this.delallSkin, type: this.state.limitty }),
 	                    _react2['default'].createElement(SkinAll, { skin: this.state.allSkin, clickskin: clickskin, type: this.state.limitty, info: this.state.userInfo }),
 	                    _react2['default'].createElement(SkinMy, { skin: this.state.mySkin[this.state.limitty], clickskin: clickskin, type: this.state.limitty, info: this.state.userInfo }),
