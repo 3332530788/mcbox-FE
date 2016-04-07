@@ -1,0 +1,53 @@
+var staticData = {
+"sevrNav":[
+{"title":"推荐服务器","data-sort":"hot","cur":"cur"},
+{"title":"MOD服务器","data-sort":"mod"},
+{"title":"我的服务器","data-sort":"my"}
+],
+"nav":[
+    {"title":"推荐","data-sort":"recommend","cur":"cur"},
+    {"title":"服务器","data-sort":"sevr"},
+    {"title":"资源","data-sort":"src"},
+    {"title":"皮肤","data-sort":"skin"},
+    {"title":"视频","data-sort":"video"}
+],
+"infoTab":[
+    {"title":"资讯","sort":"zx","cur":"cur"},
+    {"title":"视频","sort":"sp"},
+    {"title":"交易","sort":"jy"},
+    {"title":"下载","sort":"xz"}
+],
+"srcNav":[
+    {"title":"资源大全","data-sort":"all","cur":"cur"},
+    {"title":"我的资源","data-sort":"my"}
+],
+"skinNav":[
+    {"title":"橱窗","data-sort":"all","cur":"cur"},
+    {"title":"我的衣柜","data-sort":"my"}
+],
+"videoNav":[
+    {"title":"每日推荐","sort":"suggestion","cur":"cur"},
+    {"title":"精彩视频","sort":"hot","cur":""}
+],
+"srclimitvr":[
+    {"title":"全部","sort":"0","cls":"cur"},
+    {"title":"1.6.2","sort":"1.6.2"},
+    {"title":"1.6.4","sort":"1.6.4"},
+    {"title":"1.7.2","sort":"1.7.2"},
+    {"title":"1.7.10","sort":"1.7.10"},
+    {"title":"1.8","sort":"1.8"},
+],
+"srclimittp":[
+    {"title":"MOD","sort":"1","cls":"limt_mod cur"},
+    {"title":"材质","sort":"3","cls":"limt_cz"},
+    {"title":"存档","sort":"2","cls":"limt_map"}
+],
+"skinlimittp":[
+    {"themeName":"皮肤","id":"5","cls":"limt_skin cur"},
+    {"themeName":"披风","id":"6","cls":"limt_pf"}
+],
+"other":[{"title":"全部","sort":"all_type","cls":"limt_all cur"},
+    {"title":"上传","data-sort":"upload"},
+
+]
+}
