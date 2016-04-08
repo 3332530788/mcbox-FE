@@ -577,8 +577,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 9 */,
-/* 10 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -602,15 +601,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	            ulist: [],
 	            tip: 'hidden',
 	            random: '',
-	            tipTxt: '账号密码出错',
-	            callback: function callback() {}
+	            tipTxt: '账号密码出错'
 	        };
 	    },
 	    componentDidMount: function componentDidMount() {
 	        this.init();
 	    },
-	    show: function show() {
-	        mainWindow.showLoginDialog();
+	    show: function show(string) {
+	        mainWindow.showLoginDialog(string);
 	    },
 	    // show: function(type='login',cb) {
 	    //     let {_wrap} = this.props;
@@ -719,19 +717,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var _props = this.props;
 	        var successCallback = _props.successCallback;
 	        var loginInit = _props.loginInit;
-	        var _wrap = _props._wrap;
+	        var callback = _props.callback;
 
 	        var _cb = {
-	            loginSuccess: function loginSuccess(ret) {
-	                var callback = _this.state.callback;
-
+	            loginSuccess: function loginSuccess(string, name) {
 	                _this.setState({
 	                    show: 'hidden',
 	                    tip: 'hidden'
 	                });
 	                successCallback ? successCallback() : 0;
 	                loginInit ? loginInit() : 0;
-	                callback();
+	                console.log(_this.props.type, string);
+	                if (_this.props.type == string) {
+	                    callback();
+	                }
 	            }
 	            // loginFaile: (ret, dec) => {
 	            //     this.setState({
@@ -802,6 +801,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
+/* 10 */,
 /* 11 */
 /***/ function(module, exports) {
 
@@ -859,7 +859,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _mcbox_skin2 = _interopRequireDefault(_mcbox_skin);
 
-	var _mcbox_login = __webpack_require__(10);
+	var _mcbox_login = __webpack_require__(9);
 
 	var _mcbox_login2 = _interopRequireDefault(_mcbox_login);
 
@@ -942,7 +942,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                _body = _react2['default'].createElement(_mcbox_recommend2['default'], null);
 	                break;
 	            case 'sevr':
-	                _body = _react2['default'].createElement(_mcbox_server2['default'], { getAddress: getAddress, linkSele: linkSele, initSele: initSele, setStart: setStart });
+	                _body = '';
 	                break;
 	            case 'src':
 	                _body = _react2['default'].createElement(_mcbox_resource2['default'], null);
@@ -962,6 +962,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            'div',
 	            { className: 'mc_main ' + show },
 	            _body,
+	            _react2['default'].createElement(_mcbox_server2['default'], { getAddress: getAddress, linkSele: linkSele, initSele: initSele, setStart: setStart }),
 	            _react2['default'].createElement(McNav, { data: data.nav, curIndex: curIndex, click: this.handleClick })
 	        );
 	    }
@@ -1001,8 +1002,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }, 100);
 	        }
 	        //返回 false 阻止冒泡
-	        e.nativeEvent.stopPropagation();
-	        return false;
+	        // e.nativeEvent.stopPropagation();
+	        // return false;
 	    },
 	    componentWillUpdate: function componentWillUpdate(nextProps, nextState) {
 	        //判断是否为单机模式
@@ -1084,15 +1085,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        });
 	    },
 	    componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
-	        var nowObj = undefined,
-	            _name = $('.server_con .sver_sele span').eq(0).html();
-	        // if (nextProps.tempSer) {
-	        //     nowObj = nextProps.tempSer;
-	        // } else {
-	        // console.log(window.localStorage.serverSele,window.localStorage.serverSeleId);
-	        nowObj = nextProps.data[_.findIndex(nextProps.data, { 'name': _name })];
-	        // }
-	        this.setState({ nowObj: nowObj });
+	        var _this2 = this;
+
+	        setTimeout(function () {
+	            var nowObj = undefined,
+	                _name = $('.server_con .sver_sele span').eq(0).html();
+	            nowObj = nextProps.data[_.findIndex(nextProps.data, { 'name': _name })];
+	            _this2.setState({ nowObj: nowObj });
+	        }, 300);
 	    },
 	    handleClick: function handleClick(index) {
 	        //判断是否为多人或者单机模式 传值offline
@@ -1115,7 +1115,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.props.setStart(obj, link);
 	        this.props.showsrc('1', 'sevr');
 	        if (!userProfile.userProfileJson().bid) {
-	            this.refs.login.show(function () {});
+	            this.refs.login.show('index');
 	            return false;
 	        }
 	    },
@@ -1124,7 +1124,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return _react2['default'].createElement(
 	            'div',
 	            { className: 'mc_side' },
-	            _react2['default'].createElement(_mcbox_login2['default'], { ref: 'login', successCallback: this.loginInit }),
+	            _react2['default'].createElement(_mcbox_login2['default'], { ref: 'login', successCallback: this.loginInit, type: 'index' }),
 	            _react2['default'].createElement(
 	                'div',
 	                { className: 'user_info' },
@@ -1208,17 +1208,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	        loginHost.logouted.connect(function () {
 	            window.location.reload();
 	        });
-	        var _lastu = loginInfoHelper.getHistoricalLoginUserList().lastLoginUser,
-	            _listu = loginInfoHelper.getHistoricalLoginUserList().userInfos,
-	            _index = _.findIndex(_listu, {
-	            userName: _lastu,
-	            loginInfo: {
-	                autoLogin: true
-	            }
-	        });
-	        if (_index >= 0) {
-	            loginHost.LogIn(_listu[_index].userName, true, true, 'aipaiAutoPw');
-	        }
+	        //自动登录
+	        // let _lastu = loginInfoHelper.getHistoricalLoginUserList().lastLoginUser,
+	        //     _listu = loginInfoHelper.getHistoricalLoginUserList().userInfos,
+	        //     _index = _.findIndex(_listu, {
+	        //         userName: _lastu,
+	        //         loginInfo: {
+	        //             autoLogin: true
+	        //         }
+	        //     });
+	        // if (_index >= 0) {
+	        //     loginHost.LogIn(_listu[_index].userName, true, true, 'aipaiAutoPw');
+	        // }
 	    },
 	    initSele: function initSele(serverObj) {
 	        var index = 0;
@@ -2441,14 +2442,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 	    handleClickTy: function handleClickTy(index, sort) {
 	        //处理筛选类型
-	        console.log(this.props.data);
-	        // mcAction.liCur($('.ty_list .con'),index);
+	        mcAction.liCur($('.ty_list .con'), index);
 	        this.fetch(1, sort);
 	    },
 	    handleClickVr: function handleClickVr(index, sort) {
 	        //处理筛选版本
 	        var _type;
-	        console.log(this.props.data);
 	        mcAction.liCur($('.ver_list .con'), index);
 	        this.fetch(1, _type, sort);
 	    },
@@ -2721,7 +2720,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _mcbox_login = __webpack_require__(10);
+	var _mcbox_login = __webpack_require__(9);
 
 	var _mcbox_login2 = _interopRequireDefault(_mcbox_login);
 
@@ -2961,8 +2960,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	            reflash: ''
 	        };
 	    },
-	    showLogin: function showLogin(cb) {
-	        this.refs.login.show('login', cb);
+	    showLogin: function showLogin(type) {
+	        this.refs.login.show(type);
+	    },
+	    loginCallback: function loginCallback() {
+	        $('.sevr_nav li').eq(2).click();
 	    },
 	    componentWillMount: function componentWillMount() {
 	        var that = this;
@@ -3046,7 +3048,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }),
 	    delMyserver: function delMyserver(id) {
 	        var that = this;
-	        console.log(id, 2233123123);
 	        $.ajax({
 	            url: 'https://dl.aipai.com/zuihuiwan/apps/mc.php?action=delServer&serverId=' + id,
 	            dataType: 'jsonp',
@@ -3054,24 +3055,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	            success: (function (data) {
 	                var _this2 = this;
 
-	                console.log(44444);
 	                if (data.code == -1) {
 	                    return;
 	                };
-	                console.log(3333, data);
 	                setTimeout(function () {
 	                    $.ajax({
 	                        url: 'https://dl.aipai.com/zuihuiwan/apps/mc.php?action=myServers&bid=' + userProfile.userProfileJson().bid,
 	                        dataType: 'jsonp',
 	                        jsonpCallback: 'mc_myserver',
 	                        success: (function (data) {
-	                            console.log(data, 1111);
 	                            if (data.code == -1) data.data = [];
-	                            console.log(22);
 	                            that.setState({ myRet: data.data });
 	                        }).bind(_this2),
 	                        error: (function (xhr, status, err) {
-	                            console.log(err, 111323);
 	                            ajaxMyserver();
 	                        }).bind(_this2)
 	                    });
@@ -3099,7 +3095,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return _react2['default'].createElement(
 	            'div',
 	            { className: "sevr_body " + this.props.show },
-	            _react2['default'].createElement(_mcbox_login2['default'], { ref: 'login', successCallback: this.ajaxMyserver }),
+	            _react2['default'].createElement(_mcbox_login2['default'], { ref: 'login', successCallback: this.ajaxMyserver, type: 'server', callback: this.loginCallback }),
 	            _react2['default'].createElement(
 	                'div',
 	                { className: 'hot_sevr' },
@@ -3379,7 +3375,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    handleStart: function handleStart(obj, link, skip) {
 	        var arr = [];
 	        if (!userProfile.userProfileJson().bid || skip) {
-	            this.refs.SevrGameBox.showLogin(function () {});
+	            this.refs.SevrGameBox.showLogin('start');
 	            return false;
 	        }
 	        if (!obj) {
@@ -3411,9 +3407,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 	    handleClick: function handleClick(index, sort) {
 	        if (sort == 'my' && !userProfile.userProfileJson().bid) {
-	            this.refs.SevrGameBox.showLogin(function () {
-	                $('.sevr_nav li').eq(2).click();
-	            });
+	            this.refs.SevrGameBox.showLogin('server');
 	            return false;
 	        }
 	        //处理tab切换
@@ -3469,7 +3463,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _mcbox_login = __webpack_require__(10);
+	var _mcbox_login = __webpack_require__(9);
 
 	var _mcbox_login2 = _interopRequireDefault(_mcbox_login);
 
@@ -3784,8 +3778,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	            });
 	        }
 	    },
-	    showLogin: function showLogin(cb) {
-	        this.refs.login.show('login', cb);
+	    showLogin: function showLogin() {
+	        this.refs.login.show('skin');
+	    },
+	    loginCallback: function loginCallback() {
+	        $('.mc_skin .rest_nav li').click();
 	    },
 	    render: function render() {
 	        var clickvr = this.handleClickVr,
@@ -3857,7 +3854,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                _react2['default'].createElement(
 	                    'div',
 	                    { className: 'skin_box ' },
-	                    _react2['default'].createElement(_mcbox_login2['default'], { ref: 'login', successCallback: this.getMySkin }),
+	                    _react2['default'].createElement(_mcbox_login2['default'], { ref: 'login', successCallback: this.getMySkin, type: 'skin', callback: this.loginCallback }),
 	                    _react2['default'].createElement(CanvasSkin, { click: this.clickskin, skin: this.state.showSkin, myCanvas: this.state.myCanvas, handleFav: this.handleFav, delallSkin: this.delallSkin, type: this.state.limitty }),
 	                    _react2['default'].createElement(SkinAll, { skin: this.state.allSkin, clickskin: clickskin, type: this.state.limitty, info: this.state.userInfo }),
 	                    _react2['default'].createElement(SkinMy, { skin: this.state.mySkin[this.state.limitty], clickskin: clickskin, type: this.state.limitty, info: this.state.userInfo }),
@@ -4138,9 +4135,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 	    handleClick: function handleClick(index, sort) {
 	        if (sort == 'my' && !userProfile.userProfileJson().bid) {
-	            this.refs.SkinMod.showLogin(function () {
-	                $('.mc_skin .rest_nav li').click();
-	            });
+	            this.refs.SkinMod.showLogin();
 	            return false;
 	        }
 	        //处理点击导航栏,切换不同tab

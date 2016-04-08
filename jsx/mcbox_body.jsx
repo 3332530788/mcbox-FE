@@ -68,7 +68,7 @@ var McMain = React.createClass({
                  _body = < RecomBox />;
                  break;
              case 'sevr':
-                 _body = < SevrBox getAddress={getAddress} linkSele={linkSele} initSele={initSele}  setStart={setStart}/>;
+                 _body = '';
                  break;
              case 'src':
                  _body = < ResourceBox />;
@@ -87,6 +87,7 @@ var McMain = React.createClass({
         return (
             <div className={'mc_main ' + show}>
                 {_body}
+                < SevrBox getAddress={getAddress} linkSele={linkSele} initSele={initSele}  setStart={setStart}/>
                 < McNav data={data.nav} curIndex={curIndex} click ={this.handleClick} />
             </div>
         );
@@ -124,8 +125,8 @@ var McSideSelet = React.createClass({
             }, 100);
         }
         //返回 false 阻止冒泡
-        e.nativeEvent.stopPropagation();
-        return false;
+        // e.nativeEvent.stopPropagation();
+        // return false;
     },
     componentWillUpdate: function(nextProps, nextState) {
         //判断是否为单机模式
@@ -191,15 +192,12 @@ var McSide = React.createClass({
         });
     },
     componentWillReceiveProps: function(nextProps) {
-        let nowObj,
-            _name = $('.server_con .sver_sele span').eq(0).html();
-        // if (nextProps.tempSer) {
-        //     nowObj = nextProps.tempSer;
-        // } else {
-        // console.log(window.localStorage.serverSele,window.localStorage.serverSeleId);
-        nowObj = nextProps.data[_.findIndex(nextProps.data, { 'name': _name })];
-        // }
-        this.setState({ nowObj: nowObj });
+        setTimeout(() => {
+            let nowObj,
+                _name = $('.server_con .sver_sele span').eq(0).html();
+            nowObj = nextProps.data[_.findIndex(nextProps.data, { 'name': _name })];
+            this.setState({ nowObj: nowObj });
+        }, 300);
     },
     handleClick: function(index) {
         //判断是否为多人或者单机模式 传值offline
@@ -222,7 +220,7 @@ var McSide = React.createClass({
         this.props.setStart(obj, link);
         this.props.showsrc('1', 'sevr');
         if (!userProfile.userProfileJson().bid) {
-            this.refs.login.show(()=>{});
+            this.refs.login.show('index');
             return false;
         }
     },
@@ -230,7 +228,7 @@ var McSide = React.createClass({
         var that = this;
         return (
             <div className='mc_side'>
-                < Login ref='login' successCallback={this.loginInit} />
+                < Login ref='login' successCallback={this.loginInit} type='index' />
                 <div className="user_info">
                     <div className="pic"><img src={this.state.user.big} width="66" height="66" alt="" /></div>
                     <div className="info">
@@ -272,20 +270,21 @@ window.McBody = React.createClass({
         };
     },
     componentDidMount: function() {
-        loginHost.logouted.connect(function() {
+        loginHost.logouted.connect(()=> {
             window.location.reload()
         });
-        let _lastu = loginInfoHelper.getHistoricalLoginUserList().lastLoginUser,
-            _listu = loginInfoHelper.getHistoricalLoginUserList().userInfos,
-            _index = _.findIndex(_listu, {
-                userName: _lastu,
-                loginInfo: {
-                    autoLogin: true
-                }
-            });
-        if (_index >= 0) {
-            loginHost.LogIn(_listu[_index].userName, true, true, 'aipaiAutoPw');
-        }
+        //自动登录
+        // let _lastu = loginInfoHelper.getHistoricalLoginUserList().lastLoginUser,
+        //     _listu = loginInfoHelper.getHistoricalLoginUserList().userInfos,
+        //     _index = _.findIndex(_listu, {
+        //         userName: _lastu,
+        //         loginInfo: {
+        //             autoLogin: true
+        //         }
+        //     });
+        // if (_index >= 0) {
+        //     loginHost.LogIn(_listu[_index].userName, true, true, 'aipaiAutoPw');
+        // }
     },
     initSele: function(serverObj) {
         var index = 0;

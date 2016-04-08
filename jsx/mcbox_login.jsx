@@ -8,15 +8,14 @@ let Login = React.createClass({
             ulist: [],
             tip: 'hidden',
             random: '',
-            tipTxt: '账号密码出错',
-            callback: function() { }
+            tipTxt: '账号密码出错'
         }
     },
     componentDidMount() {
         this.init();
     },
-    show: function() {
-        mainWindow.showLoginDialog();
+    show: function(string) {
+        mainWindow.showLoginDialog(string);
     },
     // show: function(type='login',cb) {
     //     let {_wrap} = this.props;
@@ -120,17 +119,19 @@ let Login = React.createClass({
     //     $(_wrap+' .login_box .check').attr('value','');
     // },
     init: function() {
-        let {successCallback, loginInit, _wrap} = this.props;
+        let {successCallback, loginInit, callback} = this.props;
         var _cb = {
-            loginSuccess: (ret) => {
-                let {callback} = this.state;
+            loginSuccess: (string,name) => {
                 this.setState({
                     show: 'hidden',
                     tip: 'hidden'
                 });
                 successCallback ? successCallback() : 0;
                 loginInit ? loginInit() : 0;
-                callback();
+                console.log(this.props.type,string);
+                if (this.props.type == string) {
+                    callback();
+                }
             }
             // loginFaile: (ret, dec) => {
             //     this.setState({

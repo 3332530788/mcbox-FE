@@ -543,14 +543,12 @@ var SrcMod = React.createClass({
     },
     handleClickTy: function(index,sort) {
         //处理筛选类型
-        console.log(this.props.data);
-        // mcAction.liCur($('.ty_list .con'),index);
+        mcAction.liCur($('.ty_list .con'),index);
         this.fetch(1,sort);
     },
     handleClickVr: function(index,sort) {
         //处理筛选版本
         var _type;
-        console.log(this.props.data);
         mcAction.liCur($('.ver_list .con'),index);
         this.fetch(1,_type,sort);
     },

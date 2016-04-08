@@ -226,9 +226,7 @@ var SkinMod = React.createClass({
         } else {
             this.setState({showMoreCls:'hidden'});
         }
-        this.setState({limitty:sort},()=>{
-
-        });
+        this.setState({limitty:sort},()=>{});
         $('.skin_more').hide();
         $('.ver_list .skin_con').eq(0).click();
     },
@@ -300,8 +298,11 @@ var SkinMod = React.createClass({
             });
         }
     },
-    showLogin: function(cb) {
-        this.refs.login.show('login',cb);
+    showLogin: function() {
+        this.refs.login.show('skin');
+    },
+    loginCallback: function() {
+        $('.mc_skin .rest_nav li').click();
     },
     render: function() {
         var clickvr = this.handleClickVr,
@@ -346,7 +347,7 @@ var SkinMod = React.createClass({
                         </div>
                     </div>
                     <div className="skin_box ">
-                        < Login ref='login' successCallback={this.getMySkin} />
+                        < Login ref='login' successCallback={this.getMySkin} type='skin' callback={this.loginCallback} />
                         <CanvasSkin click={this.clickskin} skin={this.state.showSkin} myCanvas={this.state.myCanvas} handleFav={this.handleFav} delallSkin={this.delallSkin} type={this.state.limitty}/>
                         <SkinAll skin={this.state.allSkin} clickskin={clickskin} type={this.state.limitty} info={this.state.userInfo} />
                         <SkinMy skin={this.state.mySkin[this.state.limitty]} clickskin={clickskin} type={this.state.limitty} info={this.state.userInfo}/>
@@ -567,9 +568,7 @@ let SkinBox = React.createClass({
     },
     handleClick: function(index,sort) {
         if (sort == 'my' && !userProfile.userProfileJson().bid) {
-            this.refs.SkinMod.showLogin(function(){
-                $('.mc_skin .rest_nav li').click();
-            });
+            this.refs.SkinMod.showLogin();
             return false;
         }
         //处理点击导航栏,切换不同tab
