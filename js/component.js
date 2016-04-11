@@ -727,7 +727,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	                });
 	                successCallback ? successCallback() : 0;
 	                loginInit ? loginInit() : 0;
-	                console.log(_this.props.type, string);
 	                if (_this.props.type == string) {
 	                    callback();
 	                }
@@ -1092,7 +1091,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                _name = $('.server_con .sver_sele span').eq(0).html();
 	            nowObj = nextProps.data[_.findIndex(nextProps.data, { 'name': _name })];
 	            _this2.setState({ nowObj: nowObj });
-	        }, 300);
+	        }, 200);
 	    },
 	    handleClick: function handleClick(index) {
 	        //判断是否为多人或者单机模式 传值offline
@@ -1109,17 +1108,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	        //通知客户端登出
 	        loginHost.LogOut();
 	    },
+	    login: function login() {
+	        if (!userProfile.userProfileJson().bid) {
+	            console.log(123);
+	            this.refs.login.show('index');
+	            return false;
+	        }
+	    },
 	    handleStart: function handleStart(obj) {
 	        //启动游戏;
 	        var link = $('.sver_sele').eq(1).attr('data-url');
 	        this.props.setStart(obj, link);
 	        this.props.showsrc('1', 'sevr');
-	        if (!userProfile.userProfileJson().bid) {
-	            this.refs.login.show('index');
-	            return false;
-	        }
 	    },
 	    render: function render() {
+	        var _this3 = this;
+
 	        var that = this;
 	        return _react2['default'].createElement(
 	            'div',
@@ -1148,7 +1152,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	                ),
 	                _react2['default'].createElement(
 	                    'div',
-	                    { onClick: this.handleStart.bind(this, null), className: 'loginBtn ' + this.state.isLogin },
+	                    { onClick: function () {
+	                            return _this3.login();
+	                        }, className: 'loginBtn ' + this.state.isLogin },
 	                    '登录'
 	                )
 	            ),
@@ -2961,6 +2967,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        };
 	    },
 	    showLogin: function showLogin(type) {
+	        console.log(12322);
 	        this.refs.login.show(type);
 	    },
 	    loginCallback: function loginCallback() {

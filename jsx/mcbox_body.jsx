@@ -10,20 +10,20 @@ import Login from './mcbox_login';
 //主体的导航栏
 var McNav = React.createClass({
     render: function() {
-        var {click,curIndex} = this.props;
+        var {click, curIndex} = this.props;
         return (
             <section className='mc_foot'>
                 <nav className='foot_list'>
                     <ul>
                         {this.props.data.map(function(data, index) {
                             let _cur = '';
-                            if (curIndex==index) {
+                            if (curIndex == index) {
                                 _cur = 'cur'
                             }
                             return (
                                 <li className={_cur + ' ' + data['data-sort']} onClick={click.bind(this, index, data['data-sort']) } ><a href="#"><span>{data.title}</span></a></li>
                             );
-                        })}
+                        }) }
                     </ul>
                 </nav>
             </section>
@@ -63,26 +63,26 @@ var McMain = React.createClass({
             } = this.state,
             _body = '';
 
-         switch (show) {
-             case 'recommend':
-                 _body = < RecomBox />;
-                 break;
-             case 'sevr':
-                 _body = '';
-                 break;
-             case 'src':
-                 _body = < ResourceBox />;
-                 break;
-             case 'skin':
-                 _body = < SkinBox />;
-                 break;
-             case 'video':
-                 _body = < VideoBox />;
-                 break;
-             default:
-                 _body = < RecomBox />;
-                 break;
-         }
+        switch (show) {
+            case 'recommend':
+                _body = < RecomBox />;
+                break;
+            case 'sevr':
+                _body = '';
+                break;
+            case 'src':
+                _body = < ResourceBox />;
+                break;
+            case 'skin':
+                _body = < SkinBox />;
+                break;
+            case 'video':
+                _body = < VideoBox />;
+                break;
+            default:
+                _body = < RecomBox />;
+                break;
+        }
 
         return (
             <div className={'mc_main ' + show}>
@@ -197,7 +197,7 @@ var McSide = React.createClass({
                 _name = $('.server_con .sver_sele span').eq(0).html();
             nowObj = nextProps.data[_.findIndex(nextProps.data, { 'name': _name })];
             this.setState({ nowObj: nowObj });
-        }, 300);
+        }, 200);
     },
     handleClick: function(index) {
         //判断是否为多人或者单机模式 传值offline
@@ -214,15 +214,18 @@ var McSide = React.createClass({
         //通知客户端登出
         loginHost.LogOut();
     },
+    login: function() {
+        if (!userProfile.userProfileJson().bid) {
+            console.log(123);
+            this.refs.login.show('index');
+            return false;
+        }
+    },
     handleStart: function(obj) {
         //启动游戏;
         var link = $('.sver_sele').eq(1).attr('data-url');
         this.props.setStart(obj, link);
         this.props.showsrc('1', 'sevr');
-        if (!userProfile.userProfileJson().bid) {
-            this.refs.login.show('index');
-            return false;
-        }
     },
     render: function() {
         var that = this;
@@ -234,7 +237,7 @@ var McSide = React.createClass({
                     <div className="info">
                         <p><a className="user_name" href="#">{this.state.user.nickname}</a></p>
                     </div>
-                    <div onClick={this.handleStart.bind(this, null) } className={'loginBtn ' + this.state.isLogin}>
+                    <div onClick={()=>this.login()} className={'loginBtn ' + this.state.isLogin}>
                         登录
                     </div>
                 </div>
@@ -270,7 +273,7 @@ window.McBody = React.createClass({
         };
     },
     componentDidMount: function() {
-        loginHost.logouted.connect(()=> {
+        loginHost.logouted.connect(() => {
             window.location.reload()
         });
         //自动登录

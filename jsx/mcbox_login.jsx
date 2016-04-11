@@ -128,7 +128,6 @@ let Login = React.createClass({
                 });
                 successCallback ? successCallback() : 0;
                 loginInit ? loginInit() : 0;
-                console.log(this.props.type,string);
                 if (this.props.type == string) {
                     callback();
                 }

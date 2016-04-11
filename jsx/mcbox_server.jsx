@@ -146,6 +146,7 @@ var SevrGameBox = React.createClass({
         }
     },
     showLogin: function(type) {
+        console.log(12322);
         this.refs.login.show(type);
     },
     loginCallback: function() {
