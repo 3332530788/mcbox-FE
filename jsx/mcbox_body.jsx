@@ -182,7 +182,10 @@ var McSide = React.createClass({
     },
     componentWillMount: function() {
         if (userProfile.userProfileJson().big) {
-            this.setState({ user: userProfile.userProfileJson() });
+            this.setState({
+                user: userProfile.userProfileJson(),
+                isLogin: 'hidden'
+            });
         }
     },
     loginInit: function() {
@@ -216,7 +219,6 @@ var McSide = React.createClass({
     },
     login: function() {
         if (!userProfile.userProfileJson().bid) {
-            console.log(123);
             this.refs.login.show('index');
             return false;
         }
@@ -237,7 +239,7 @@ var McSide = React.createClass({
                     <div className="info">
                         <p><a className="user_name" href="#">{this.state.user.nickname}</a></p>
                     </div>
-                    <div onClick={()=>this.login()} className={'loginBtn ' + this.state.isLogin}>
+                    <div onClick={() => this.login() } className={'loginBtn ' + this.state.isLogin}>
                         登录
                     </div>
                 </div>
