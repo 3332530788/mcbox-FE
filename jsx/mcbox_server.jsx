@@ -142,8 +142,11 @@ var SevrGameBox = React.createClass({
             reflash:''
         }
     },
-    showLogin: function(cb) {
-        this.refs.login.show('login',cb);
+    showLogin: function(type) {
+        this.refs.login.show(type);
+    },
+    loginCallback: function() {
+        $('.sevr_nav li').eq(2).click();
     },
     componentWillMount: function() {
         var that = this;
@@ -247,28 +250,22 @@ var SevrGameBox = React.createClass({
     },
     delMyserver: function(id) {
         var that = this;
-        console.log(id,2233123123);
         $.ajax({
             url: 'https://dl.aipai.com/zuihuiwan/apps/mc.php?action=delServer&serverId='+id,
             dataType: 'jsonp',
             jsonpCallback: 'mc_delserver',
             success: function(data) {
-                console.log(44444);
                 if (data.code == -1) {return};
-                console.log(3333,data);
                 setTimeout(() => {
                     $.ajax({
                         url: 'https://dl.aipai.com/zuihuiwan/apps/mc.php?action=myServers&bid='+userProfile.userProfileJson().bid,
                         dataType: 'jsonp',
                         jsonpCallback: 'mc_myserver',
                         success: function(data) {
-                            console.log(data,1111);
                             if (data.code == -1) data.data=[];
-                            console.log(22);
                             that.setState({myRet: data.data});
                         }.bind(this),
                         error: function(xhr, status, err) {
-                            console.log(err,111323);
                             ajaxMyserver();
                         }.bind(this)
                     });
@@ -314,7 +311,7 @@ var SevrGameBox = React.createClass({
             });
         return (
             <div className = {"sevr_body "+this.props.show} >
-                < Login ref='login' successCallback={this.ajaxMyserver} />
+                < Login ref='login' successCallback={this.ajaxMyserver} type='server' callback={this.loginCallback}/>
                 < HotSeverGame />
                 <div className='pure_sevr' >{puregame}</div>
                 <div className='mod_sevr' >{modgame}</div>
@@ -562,7 +559,7 @@ let SevrBox = React.createClass({
     handleStart: function(obj,link,skip) {
         var arr = [];
         if (!userProfile.userProfileJson().bid || skip) {
-            this.refs.SevrGameBox.showLogin(()=>{});
+            this.refs.SevrGameBox.showLogin('start');
             return false;
         }
         if (!obj) {
@@ -598,12 +595,7 @@ let SevrBox = React.createClass({
     handleClick: function(index,sort) {
         var that = this;
         if (sort == 'my' && !userProfile.userProfileJson().bid) {
-            this.refs.SevrGameBox.showLogin(() => {
-                that.setState({
-                    show:sort,
-                    curIndex:index
-                });
-            });
+            this.refs.SevrGameBox.showLogin('server');
             return false;
         }
         //处理tab切换
