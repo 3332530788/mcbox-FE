@@ -1,7 +1,9 @@
 var staticData = {
 "sevrNav":[
 {"title":"推荐服务器","data-sort":"hot","cur":"cur"},
+{"title":"纯净服务器","data-sort":"pure"},
 {"title":"MOD服务器","data-sort":"mod"},
+{"title":"红人服务器","data-sort":"redMan"},
 {"title":"我的服务器","data-sort":"my"}
 ],
 "nav":[

@@ -271,7 +271,7 @@ var Src = React.createClass({
         };
     },
     // componentWillUpdate
-    componentWillReceiveProps: function(nextProps) {
+    ,: function(nextProps) {
         var Style = {
                 width: nextProps.data.progress
             };

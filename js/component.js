@@ -54,7 +54,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(27);
+	module.exports = __webpack_require__(41);
 
 
 /***/ },
@@ -577,8 +577,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 9 */,
-/* 10 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -802,6 +801,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
+/* 10 */,
 /* 11 */
 /***/ function(module, exports) {
 
@@ -817,14 +817,238 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 17 */,
 /* 18 */,
 /* 19 */,
-/* 20 */,
-/* 21 */,
-/* 22 */,
-/* 23 */,
-/* 24 */,
-/* 25 */,
-/* 26 */,
+/* 20 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = { "default": __webpack_require__(21), __esModule: true };
+
+/***/ },
+/* 21 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(33);
+	module.exports = __webpack_require__(11).Object.assign;
+
+/***/ },
+/* 22 */
+/***/ function(module, exports) {
+
+	module.exports = function(it){
+	  if(typeof it != 'function')throw TypeError(it + ' is not a function!');
+	  return it;
+	};
+
+/***/ },
+/* 23 */
+/***/ function(module, exports) {
+
+	var toString = {}.toString;
+
+	module.exports = function(it){
+	  return toString.call(it).slice(8, -1);
+	};
+
+/***/ },
+/* 24 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// optional / simple context binding
+	var aFunction = __webpack_require__(22);
+	module.exports = function(fn, that, length){
+	  aFunction(fn);
+	  if(that === undefined)return fn;
+	  switch(length){
+	    case 1: return function(a){
+	      return fn.call(that, a);
+	    };
+	    case 2: return function(a, b){
+	      return fn.call(that, a, b);
+	    };
+	    case 3: return function(a, b, c){
+	      return fn.call(that, a, b, c);
+	    };
+	  }
+	  return function(/* ...args */){
+	    return fn.apply(that, arguments);
+	  };
+	};
+
+/***/ },
+/* 25 */
+/***/ function(module, exports) {
+
+	// 7.2.1 RequireObjectCoercible(argument)
+	module.exports = function(it){
+	  if(it == undefined)throw TypeError("Can't call method on  " + it);
+	  return it;
+	};
+
+/***/ },
+/* 26 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var global    = __webpack_require__(28)
+	  , core      = __webpack_require__(11)
+	  , ctx       = __webpack_require__(24)
+	  , PROTOTYPE = 'prototype';
+
+	var $export = function(type, name, source){
+	  var IS_FORCED = type & $export.F
+	    , IS_GLOBAL = type & $export.G
+	    , IS_STATIC = type & $export.S
+	    , IS_PROTO  = type & $export.P
+	    , IS_BIND   = type & $export.B
+	    , IS_WRAP   = type & $export.W
+	    , exports   = IS_GLOBAL ? core : core[name] || (core[name] = {})
+	    , target    = IS_GLOBAL ? global : IS_STATIC ? global[name] : (global[name] || {})[PROTOTYPE]
+	    , key, own, out;
+	  if(IS_GLOBAL)source = name;
+	  for(key in source){
+	    // contains in native
+	    own = !IS_FORCED && target && key in target;
+	    if(own && key in exports)continue;
+	    // export native or passed
+	    out = own ? target[key] : source[key];
+	    // prevent global pollution for namespaces
+	    exports[key] = IS_GLOBAL && typeof target[key] != 'function' ? source[key]
+	    // bind timers to global for call from export context
+	    : IS_BIND && own ? ctx(out, global)
+	    // wrap global constructors for prevent change them in library
+	    : IS_WRAP && target[key] == out ? (function(C){
+	      var F = function(param){
+	        return this instanceof C ? new C(param) : C(param);
+	      };
+	      F[PROTOTYPE] = C[PROTOTYPE];
+	      return F;
+	    // make static versions for prototype methods
+	    })(out) : IS_PROTO && typeof out == 'function' ? ctx(Function.call, out) : out;
+	    if(IS_PROTO)(exports[PROTOTYPE] || (exports[PROTOTYPE] = {}))[key] = out;
+	  }
+	};
+	// type bitmap
+	$export.F = 1;  // forced
+	$export.G = 2;  // global
+	$export.S = 4;  // static
+	$export.P = 8;  // proto
+	$export.B = 16; // bind
+	$export.W = 32; // wrap
+	module.exports = $export;
+
+/***/ },
 /* 27 */
+/***/ function(module, exports) {
+
+	module.exports = function(exec){
+	  try {
+	    return !!exec();
+	  } catch(e){
+	    return true;
+	  }
+	};
+
+/***/ },
+/* 28 */
+/***/ function(module, exports) {
+
+	// https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
+	var global = module.exports = typeof window != 'undefined' && window.Math == Math
+	  ? window : typeof self != 'undefined' && self.Math == Math ? self : Function('return this')();
+	if(typeof __g == 'number')__g = global; // eslint-disable-line no-undef
+
+/***/ },
+/* 29 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// fallback for non-array-like ES3 and non-enumerable old V8 strings
+	var cof = __webpack_require__(23);
+	module.exports = Object('z').propertyIsEnumerable(0) ? Object : function(it){
+	  return cof(it) == 'String' ? it.split('') : Object(it);
+	};
+
+/***/ },
+/* 30 */
+/***/ function(module, exports) {
+
+	var $Object = Object;
+	module.exports = {
+	  create:     $Object.create,
+	  getProto:   $Object.getPrototypeOf,
+	  isEnum:     {}.propertyIsEnumerable,
+	  getDesc:    $Object.getOwnPropertyDescriptor,
+	  setDesc:    $Object.defineProperty,
+	  setDescs:   $Object.defineProperties,
+	  getKeys:    $Object.keys,
+	  getNames:   $Object.getOwnPropertyNames,
+	  getSymbols: $Object.getOwnPropertySymbols,
+	  each:       [].forEach
+	};
+
+/***/ },
+/* 31 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// 19.1.2.1 Object.assign(target, source, ...)
+	var $        = __webpack_require__(30)
+	  , toObject = __webpack_require__(32)
+	  , IObject  = __webpack_require__(29);
+
+	// should work with symbols and should have deterministic property order (V8 bug)
+	module.exports = __webpack_require__(27)(function(){
+	  var a = Object.assign
+	    , A = {}
+	    , B = {}
+	    , S = Symbol()
+	    , K = 'abcdefghijklmnopqrst';
+	  A[S] = 7;
+	  K.split('').forEach(function(k){ B[k] = k; });
+	  return a({}, A)[S] != 7 || Object.keys(a({}, B)).join('') != K;
+	}) ? function assign(target, source){ // eslint-disable-line no-unused-vars
+	  var T     = toObject(target)
+	    , $$    = arguments
+	    , $$len = $$.length
+	    , index = 1
+	    , getKeys    = $.getKeys
+	    , getSymbols = $.getSymbols
+	    , isEnum     = $.isEnum;
+	  while($$len > index){
+	    var S      = IObject($$[index++])
+	      , keys   = getSymbols ? getKeys(S).concat(getSymbols(S)) : getKeys(S)
+	      , length = keys.length
+	      , j      = 0
+	      , key;
+	    while(length > j)if(isEnum.call(S, key = keys[j++]))T[key] = S[key];
+	  }
+	  return T;
+	} : Object.assign;
+
+/***/ },
+/* 32 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// 7.1.13 ToObject(argument)
+	var defined = __webpack_require__(25);
+	module.exports = function(it){
+	  return Object(defined(it));
+	};
+
+/***/ },
+/* 33 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// 19.1.3.1 Object.assign(target, source)
+	var $export = __webpack_require__(26);
+
+	$export($export.S + $export.F, 'Object', {assign: __webpack_require__(31)});
+
+/***/ },
+/* 34 */,
+/* 35 */,
+/* 36 */,
+/* 37 */,
+/* 38 */,
+/* 39 */,
+/* 40 */,
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -839,27 +1063,27 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	var _mcbox_recommend = __webpack_require__(28);
+	var _mcbox_recommend = __webpack_require__(42);
 
 	var _mcbox_recommend2 = _interopRequireDefault(_mcbox_recommend);
 
-	var _mcbox_resource = __webpack_require__(29);
+	var _mcbox_resource = __webpack_require__(43);
 
 	var _mcbox_resource2 = _interopRequireDefault(_mcbox_resource);
 
-	var _mcbox_video = __webpack_require__(32);
+	var _mcbox_video = __webpack_require__(46);
 
 	var _mcbox_video2 = _interopRequireDefault(_mcbox_video);
 
-	var _mcbox_server = __webpack_require__(30);
+	var _mcbox_server = __webpack_require__(44);
 
 	var _mcbox_server2 = _interopRequireDefault(_mcbox_server);
 
-	var _mcbox_skin = __webpack_require__(31);
+	var _mcbox_skin = __webpack_require__(45);
 
 	var _mcbox_skin2 = _interopRequireDefault(_mcbox_skin);
 
-	var _mcbox_login = __webpack_require__(10);
+	var _mcbox_login = __webpack_require__(9);
 
 	var _mcbox_login2 = _interopRequireDefault(_mcbox_login);
 
@@ -1278,7 +1502,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	_reactDom2['default'].render(_react2['default'].createElement(McBody, null), document.getElementById('warpper'));
 
 /***/ },
-/* 28 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1636,12 +1860,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 29 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _Object$assign = __webpack_require__(33)['default'];
+	var _Object$assign = __webpack_require__(20)['default'];
 
 	var _interopRequireDefault = __webpack_require__(4)['default'];
 
@@ -2706,7 +2930,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 30 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2721,7 +2945,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _mcbox_login = __webpack_require__(10);
+	var _mcbox_login = __webpack_require__(9);
 
 	var _mcbox_login2 = _interopRequireDefault(_mcbox_login);
 
@@ -2731,6 +2955,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    render: function render() {
 	        var click = this.props.click,
+	            getTabClass = this.props.getTabClass,
 	            cls = 'hidden',
 	            btn = userProfile.joinServerBtnInfo() || {
 	            status: 0,
@@ -2747,7 +2972,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	                'ul',
 	                null,
 	                this.props.data.map(function (data, index) {
-	                    return _react2['default'].createElement(SevrNavli, { li: data, index: index, click: click });
+	                    return _react2['default'].createElement(
+	                        'li',
+	                        { className: getTabClass(index), onClick: click.bind(this, index, data['data-sort']) },
+	                        _react2['default'].createElement(
+	                            'a',
+	                            { href: '#' },
+	                            data.title
+	                        )
+	                    );
 	                })
 	            ),
 	            _react2['default'].createElement(
@@ -2758,21 +2991,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        );
 	    }
 	});
-	var SevrNavli = _react2['default'].createClass({
-	    displayName: 'SevrNavli',
 
-	    render: function render() {
-	        return _react2['default'].createElement(
-	            'li',
-	            { className: this.props.li.cur, onClick: this.props.click.bind(this, this.props.index, this.props.li['data-sort']) },
-	            _react2['default'].createElement(
-	                'a',
-	                { href: '#' },
-	                this.props.li.title
-	            )
-	        );
-	    }
-	});
 	//启动中的样式
 	var SevrShadow = _react2['default'].createClass({
 	    displayName: 'SevrShadow',
@@ -2957,6 +3176,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            allRet: [],
 	            modRet: [],
 	            myRet: [],
+	            pureRet: [],
+	            redManRet: [],
 	            debug: boxEnv.isDebugMode(),
 	            reflash: ''
 	        };
@@ -2970,6 +3191,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        ajaxAllserver();
 	        ajaxModserver();
 	        ajaxMyserver();
+	        ajaxPureserver();
+	        ajaxRedManserver();
 	        function ajaxAllserver() {
 	            $.ajax({
 	                url: 'https://dl.aipai.com/zuihuiwan/apps/mc_action-allServer.html',
@@ -2998,6 +3221,36 @@ return /******/ (function(modules) { // webpackBootstrap
 	                }).bind(this),
 	                error: (function (xhr, status, err) {
 	                    ajaxModserver();
+	                }).bind(this)
+	            });
+	        }
+	        function ajaxPureserver() {
+	            $.ajax({
+	                url: 'https://dl.aipai.com/zuihuiwan/apps/mc_action-allServer_type-64.html',
+	                dataType: 'jsonp',
+	                jsonpCallback: 'mc_pureserver',
+	                success: (function (data) {
+	                    if (data.code == -1) return;
+	                    that.setState({ pureRet: data.server });
+	                    that.props.initSele(data);
+	                }).bind(this),
+	                error: (function (xhr, status, err) {
+	                    ajaxPureserver();
+	                }).bind(this)
+	            });
+	        }
+	        function ajaxRedManserver() {
+	            $.ajax({
+	                url: 'https://dl.aipai.com/zuihuiwan/apps/mc_action-allServer_type-64.html',
+	                dataType: 'jsonp',
+	                jsonpCallback: 'mc_redManserver',
+	                success: (function (data) {
+	                    if (data.code == -1) return;
+	                    that.setState({ redManRet: data.server });
+	                    that.props.initSele(data);
+	                }).bind(this),
+	                error: (function (xhr, status, err) {
+	                    ajaxRedManserver();
 	                }).bind(this)
 	            });
 	        }
@@ -3088,7 +3341,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	            if (data.status == 1 || !that.state.debug && data.status == 2) return;
 	            return _react2['default'].createElement(SevrGame, { data: data, toDetal: toDetal });
 	        }),
+	            puregame = this.state.pureRet.map(function (data, index) {
+	            if (data.status == 1 || !that.state.debug && data.status == 2) return;
+	            return _react2['default'].createElement(SevrGame, { data: data, toDetal: toDetal });
+	        }),
 	            modgame = this.state.modRet.map(function (data) {
+	            if (data.status == 1 || !that.state.debug && data.status == 2) return;
+	            return _react2['default'].createElement(SevrGame, { data: data, toDetal: toDetal });
+	        }),
+	            redMangame = this.state.redManRet.map(function (data, index) {
 	            if (data.status == 1 || !that.state.debug && data.status == 2) return;
 	            return _react2['default'].createElement(SevrGame, { data: data, toDetal: toDetal });
 	        }),
@@ -3100,15 +3361,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	            'div',
 	            { className: "sevr_body " + this.props.show },
 	            _react2['default'].createElement(_mcbox_login2['default'], { ref: 'login', successCallback: this.ajaxMyserver }),
+	            _react2['default'].createElement(HotSeverGame, null),
 	            _react2['default'].createElement(
 	                'div',
-	                { className: 'hot_sevr' },
-	                hotgame
+	                { className: 'pure_sevr' },
+	                puregame
 	            ),
 	            _react2['default'].createElement(
 	                'div',
 	                { className: 'mod_sevr' },
 	                modgame
+	            ),
+	            _react2['default'].createElement(
+	                'div',
+	                { className: 'redMan_sevr' },
+	                redMangame
 	            ),
 	            _react2['default'].createElement(
 	                'div',
@@ -3118,7 +3385,88 @@ return /******/ (function(modules) { // webpackBootstrap
 	        );
 	    }
 	});
-	//推荐服务器
+	// 推荐服务器
+	var HotSeverGame = _react2['default'].createClass({
+	    displayName: 'HotSeverGame',
+
+	    render: function render() {
+
+	        return _react2['default'].createElement(
+	            'div',
+	            { className: 'hot_sevr' },
+	            _react2['default'].createElement(
+	                'h3',
+	                { className: 'hot_title' },
+	                '官方小游戏服'
+	            ),
+	            _react2['default'].createElement(
+	                'div',
+	                { className: 'hot_info' },
+	                _react2['default'].createElement(
+	                    'h4',
+	                    null,
+	                    '游戏嘉年华'
+	                ),
+	                _react2['default'].createElement(
+	                    'p',
+	                    null,
+	                    'MC最会玩推出的小游戏服，内含饥饿游戏、起床游戏、战桥、 空岛战争、速建各类游戏玩法！等什么？来战斗吧！'
+	                ),
+	                _react2['default'].createElement(
+	                    'div',
+	                    { className: 'hot_tips' },
+	                    _react2['default'].createElement(
+	                        'span',
+	                        null,
+	                        '官方'
+	                    )
+	                )
+	            ),
+	            _react2['default'].createElement(
+	                'div',
+	                { className: 'hot_inner' },
+	                _react2['default'].createElement(SubHotSevr, null),
+	                _react2['default'].createElement(SubHotSevr, null),
+	                _react2['default'].createElement(SubHotSevr, null),
+	                _react2['default'].createElement(SubHotSevr, null)
+	            )
+	        );
+	    }
+	});
+	var SubHotSevr = _react2['default'].createClass({
+	    displayName: 'SubHotSevr',
+
+	    render: function render() {
+	        return _react2['default'].createElement(
+	            'div',
+	            { className: 'sevr' },
+	            _react2['default'].createElement(
+	                'h3',
+	                null,
+	                '热门服推荐：'
+	            ),
+	            _react2['default'].createElement(
+	                'div',
+	                { className: 'hot_sevr_btn' },
+	                _react2['default'].createElement(
+	                    'span',
+	                    null,
+	                    '游戏服2游戏服2.1'
+	                )
+	            ),
+	            _react2['default'].createElement(
+	                'div',
+	                { className: 'hot_sevr_btn' },
+	                _react2['default'].createElement(
+	                    'span',
+	                    null,
+	                    '游戏服2.1'
+	                )
+	            )
+	        );
+	    }
+	});
+	//服务器
 	var SevrGame = _react2['default'].createClass({
 	    displayName: 'SevrGame',
 
@@ -3353,7 +3701,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            newStatus: [],
 	            proTxt: '初始',
 	            text: '',
-	            obj: {}
+	            obj: {},
+	            curIndex: 0
 	        };
 	    },
 	    componentWillMount: function componentWillMount() {
@@ -3409,16 +3758,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	        });
 	        // $('.btn_start').addClass('btn_starting');
 	    },
+	    getTabClass: function getTabClass(index) {
+	        // 判断点击的选项卡下标是否与编号相同
+	        return index === this.state.curIndex ? "cur" : "";
+	    },
 	    handleClick: function handleClick(index, sort) {
+	        var that = this;
 	        if (sort == 'my' && !userProfile.userProfileJson().bid) {
 	            this.refs.SevrGameBox.showLogin(function () {
-	                $('.sevr_nav li').eq(2).click();
+	                that.setState({
+	                    show: sort,
+	                    curIndex: index
+	                });
 	            });
 	            return false;
 	        }
 	        //处理tab切换
-	        mcAction.liCur($('.sevr_nav li'), index);
-	        this.setState({ show: sort });
+	        //mcAction.liCur($('.sevr_nav li'),index);
+	        this.setState({
+	            show: sort,
+	            curIndex: index
+	        });
 	    },
 	    toDetal: function toDetal(obj) {
 	        var _this6 = this;
@@ -3441,7 +3801,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            { className: 'mc_server' },
 	            _react2['default'].createElement(SevrShadow, { show: this.state.showshadow, txt: this.state.proTxt }),
 	            _react2['default'].createElement(SevrDetal, { showdetal: this.state.showdetal, hiddenDetal: this.onHiddenDetal, obj: this.state.obj }),
-	            _react2['default'].createElement(SevrNav, { data: this.state.data.sevrNav, click: this.handleClick }),
+	            _react2['default'].createElement(SevrNav, { data: this.state.data.sevrNav, click: this.handleClick, getTabClass: this.getTabClass }),
 	            _react2['default'].createElement(SevrGameBox, { ref: 'SevrGameBox', show: this.state.show, toDetal: this.toDetal, handleStart: this.handleStart, getAddress: this.props.getAddress, initSele: this.props.initSele })
 	        );
 	    }
@@ -3454,7 +3814,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	</p> */
 
 /***/ },
-/* 31 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3469,7 +3829,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _mcbox_login = __webpack_require__(10);
+	var _mcbox_login = __webpack_require__(9);
 
 	var _mcbox_login2 = _interopRequireDefault(_mcbox_login);
 
@@ -4161,7 +4521,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 32 */
+/* 46 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4925,230 +5285,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	exports['default'] = VideoBox;
 	module.exports = exports['default'];
-
-/***/ },
-/* 33 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = { "default": __webpack_require__(34), __esModule: true };
-
-/***/ },
-/* 34 */
-/***/ function(module, exports, __webpack_require__) {
-
-	__webpack_require__(46);
-	module.exports = __webpack_require__(11).Object.assign;
-
-/***/ },
-/* 35 */
-/***/ function(module, exports) {
-
-	module.exports = function(it){
-	  if(typeof it != 'function')throw TypeError(it + ' is not a function!');
-	  return it;
-	};
-
-/***/ },
-/* 36 */
-/***/ function(module, exports) {
-
-	var toString = {}.toString;
-
-	module.exports = function(it){
-	  return toString.call(it).slice(8, -1);
-	};
-
-/***/ },
-/* 37 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// optional / simple context binding
-	var aFunction = __webpack_require__(35);
-	module.exports = function(fn, that, length){
-	  aFunction(fn);
-	  if(that === undefined)return fn;
-	  switch(length){
-	    case 1: return function(a){
-	      return fn.call(that, a);
-	    };
-	    case 2: return function(a, b){
-	      return fn.call(that, a, b);
-	    };
-	    case 3: return function(a, b, c){
-	      return fn.call(that, a, b, c);
-	    };
-	  }
-	  return function(/* ...args */){
-	    return fn.apply(that, arguments);
-	  };
-	};
-
-/***/ },
-/* 38 */
-/***/ function(module, exports) {
-
-	// 7.2.1 RequireObjectCoercible(argument)
-	module.exports = function(it){
-	  if(it == undefined)throw TypeError("Can't call method on  " + it);
-	  return it;
-	};
-
-/***/ },
-/* 39 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var global    = __webpack_require__(41)
-	  , core      = __webpack_require__(11)
-	  , ctx       = __webpack_require__(37)
-	  , PROTOTYPE = 'prototype';
-
-	var $export = function(type, name, source){
-	  var IS_FORCED = type & $export.F
-	    , IS_GLOBAL = type & $export.G
-	    , IS_STATIC = type & $export.S
-	    , IS_PROTO  = type & $export.P
-	    , IS_BIND   = type & $export.B
-	    , IS_WRAP   = type & $export.W
-	    , exports   = IS_GLOBAL ? core : core[name] || (core[name] = {})
-	    , target    = IS_GLOBAL ? global : IS_STATIC ? global[name] : (global[name] || {})[PROTOTYPE]
-	    , key, own, out;
-	  if(IS_GLOBAL)source = name;
-	  for(key in source){
-	    // contains in native
-	    own = !IS_FORCED && target && key in target;
-	    if(own && key in exports)continue;
-	    // export native or passed
-	    out = own ? target[key] : source[key];
-	    // prevent global pollution for namespaces
-	    exports[key] = IS_GLOBAL && typeof target[key] != 'function' ? source[key]
-	    // bind timers to global for call from export context
-	    : IS_BIND && own ? ctx(out, global)
-	    // wrap global constructors for prevent change them in library
-	    : IS_WRAP && target[key] == out ? (function(C){
-	      var F = function(param){
-	        return this instanceof C ? new C(param) : C(param);
-	      };
-	      F[PROTOTYPE] = C[PROTOTYPE];
-	      return F;
-	    // make static versions for prototype methods
-	    })(out) : IS_PROTO && typeof out == 'function' ? ctx(Function.call, out) : out;
-	    if(IS_PROTO)(exports[PROTOTYPE] || (exports[PROTOTYPE] = {}))[key] = out;
-	  }
-	};
-	// type bitmap
-	$export.F = 1;  // forced
-	$export.G = 2;  // global
-	$export.S = 4;  // static
-	$export.P = 8;  // proto
-	$export.B = 16; // bind
-	$export.W = 32; // wrap
-	module.exports = $export;
-
-/***/ },
-/* 40 */
-/***/ function(module, exports) {
-
-	module.exports = function(exec){
-	  try {
-	    return !!exec();
-	  } catch(e){
-	    return true;
-	  }
-	};
-
-/***/ },
-/* 41 */
-/***/ function(module, exports) {
-
-	// https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
-	var global = module.exports = typeof window != 'undefined' && window.Math == Math
-	  ? window : typeof self != 'undefined' && self.Math == Math ? self : Function('return this')();
-	if(typeof __g == 'number')__g = global; // eslint-disable-line no-undef
-
-/***/ },
-/* 42 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// fallback for non-array-like ES3 and non-enumerable old V8 strings
-	var cof = __webpack_require__(36);
-	module.exports = Object('z').propertyIsEnumerable(0) ? Object : function(it){
-	  return cof(it) == 'String' ? it.split('') : Object(it);
-	};
-
-/***/ },
-/* 43 */
-/***/ function(module, exports) {
-
-	var $Object = Object;
-	module.exports = {
-	  create:     $Object.create,
-	  getProto:   $Object.getPrototypeOf,
-	  isEnum:     {}.propertyIsEnumerable,
-	  getDesc:    $Object.getOwnPropertyDescriptor,
-	  setDesc:    $Object.defineProperty,
-	  setDescs:   $Object.defineProperties,
-	  getKeys:    $Object.keys,
-	  getNames:   $Object.getOwnPropertyNames,
-	  getSymbols: $Object.getOwnPropertySymbols,
-	  each:       [].forEach
-	};
-
-/***/ },
-/* 44 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// 19.1.2.1 Object.assign(target, source, ...)
-	var $        = __webpack_require__(43)
-	  , toObject = __webpack_require__(45)
-	  , IObject  = __webpack_require__(42);
-
-	// should work with symbols and should have deterministic property order (V8 bug)
-	module.exports = __webpack_require__(40)(function(){
-	  var a = Object.assign
-	    , A = {}
-	    , B = {}
-	    , S = Symbol()
-	    , K = 'abcdefghijklmnopqrst';
-	  A[S] = 7;
-	  K.split('').forEach(function(k){ B[k] = k; });
-	  return a({}, A)[S] != 7 || Object.keys(a({}, B)).join('') != K;
-	}) ? function assign(target, source){ // eslint-disable-line no-unused-vars
-	  var T     = toObject(target)
-	    , $$    = arguments
-	    , $$len = $$.length
-	    , index = 1
-	    , getKeys    = $.getKeys
-	    , getSymbols = $.getSymbols
-	    , isEnum     = $.isEnum;
-	  while($$len > index){
-	    var S      = IObject($$[index++])
-	      , keys   = getSymbols ? getKeys(S).concat(getSymbols(S)) : getKeys(S)
-	      , length = keys.length
-	      , j      = 0
-	      , key;
-	    while(length > j)if(isEnum.call(S, key = keys[j++]))T[key] = S[key];
-	  }
-	  return T;
-	} : Object.assign;
-
-/***/ },
-/* 45 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// 7.1.13 ToObject(argument)
-	var defined = __webpack_require__(38);
-	module.exports = function(it){
-	  return Object(defined(it));
-	};
-
-/***/ },
-/* 46 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// 19.1.3.1 Object.assign(target, source)
-	var $export = __webpack_require__(39);
-
-	$export($export.S + $export.F, 'Object', {assign: __webpack_require__(44)});
 
 /***/ },
 /* 47 */,

@@ -5,6 +5,7 @@ import Login from './mcbox_login';
 var SevrNav = React.createClass({
     render: function() {
         var click = this.props.click,
+            getTabClass = this.props.getTabClass,
             cls = 'hidden',
             btn = userProfile.joinServerBtnInfo() || {
                 status: 0,
@@ -19,7 +20,7 @@ var SevrNav = React.createClass({
                 <ul>
                     {this.props.data.map(function (data,index) {
                         return (
-                            < SevrNavli li={data} index={index} click={click}/>
+                            <li className={getTabClass(index)} onClick={click.bind(this,index,data['data-sort']) } ><a href="#">{data.title}</a></li>
                         );
                     })}
                 </ul>
@@ -28,13 +29,7 @@ var SevrNav = React.createClass({
         );
     }
 });
-var SevrNavli = React.createClass({
-    render: function() {
-        return (
-            <li className={this.props.li.cur} onClick={this.props.click.bind(this,this.props.index,this.props.li['data-sort']) } ><a href="#">{this.props.li.title}</a></li>
-        );
-    }
-});
+
 //启动中的样式
 var SevrShadow = React.createClass({
     render: function() {
@@ -141,6 +136,8 @@ var SevrGameBox = React.createClass({
             allRet: [],
             modRet: [],
             myRet:[],
+            pureRet:[],
+            redManRet:[],
             debug:boxEnv.isDebugMode(),
             reflash:''
         }
@@ -154,6 +151,8 @@ var SevrGameBox = React.createClass({
         ajaxAllserver();
         ajaxModserver();
         ajaxMyserver();
+        ajaxPureserver();
+        ajaxRedManserver();
         function ajaxAllserver() {
             $.ajax({
                 url: 'https://dl.aipai.com/zuihuiwan/apps/mc_action-allServer.html',
@@ -184,6 +183,36 @@ var SevrGameBox = React.createClass({
                     ajaxModserver();
                 }.bind(this)
             });
+        }
+        function ajaxPureserver() {
+            $.ajax({
+                url: 'https://dl.aipai.com/zuihuiwan/apps/mc_action-allServer_type-64.html',
+                dataType: 'jsonp',
+                jsonpCallback: 'mc_pureserver',
+                success: function(data) {
+                    if (data.code == -1) return;
+                    that.setState({pureRet: data.server});
+                    that.props.initSele(data);
+                }.bind(this),
+                error: function(xhr, status, err) {
+                    ajaxPureserver();
+                }.bind(this)
+            });
+        }
+        function ajaxRedManserver(){
+            $.ajax({
+                url:'https://dl.aipai.com/zuihuiwan/apps/mc_action-allServer_type-64.html',
+                dataType:'jsonp',
+                jsonpCallback:'mc_redManserver',
+                success: function(data) {
+                    if (data.code == -1) return;
+                    that.setState({redManRet:data.server});
+                    that.props.initSele(data);
+                }.bind(this),
+                error: function(xhr,status,err){
+                    ajaxRedManserver();
+                }.bind(this)
+            })
         }
         function ajaxMyserver() {
             $.ajax({
@@ -259,11 +288,23 @@ var SevrGameBox = React.createClass({
                     <SevrGame data={data} toDetal={toDetal} />
                 );
             }),
+            puregame = this.state.pureRet.map(function(data,index){
+                if(data.status == 1 || (!that.state.debug && data.status == 2)) return;
+                return (
+                    <SevrGame data={data} toDetal={toDetal} />
+                )
+            }),
             modgame = this.state.modRet.map(function (data) {
                     if (data.status == 1 ||(!that.state.debug&&data.status == 2)) return;
                     return (
                         <SevrGame data={data} toDetal={toDetal} />
                     );
+            }),
+            redMangame = this.state.redManRet.map(function(data,index){
+                if(data.status == 1 || (!that.state.debug && data.status == 2)) return;
+                return (
+                    <SevrGame data={data} toDetal={toDetal} />
+                )
             }),
             mygame = this.state.myRet.map(function (data,index) {
                 if (data.status == 1 ||(!that.state.debug&&data.status == 2)) return;
@@ -274,14 +315,51 @@ var SevrGameBox = React.createClass({
         return (
             <div className = {"sevr_body "+this.props.show} >
                 < Login ref='login' successCallback={this.ajaxMyserver} />
-                <div className='hot_sevr' >{hotgame}</div>
+                < HotSeverGame />
+                <div className='pure_sevr' >{puregame}</div>
                 <div className='mod_sevr' >{modgame}</div>
+                <div className='redMan_sevr' >{redMangame}</div>
                 <div className='my_sevr' >{mygame}</div>
             </div >
         );
     }
 });
-//推荐服务器
+// 推荐服务器
+var HotSeverGame = React.createClass({
+    render:function(){
+
+        return (
+            <div className="hot_sevr" >
+                <h3 className="hot_title">官方小游戏服</h3>
+                <div className="hot_info">
+                    <h4>游戏嘉年华</h4>
+                    <p>MC最会玩推出的小游戏服，内含饥饿游戏、起床游戏、战桥、 空岛战争、速建各类游戏玩法！等什么？来战斗吧！</p>
+                    <div className="hot_tips">
+                        <span>官方</span>
+                    </div>
+                </div>
+                <div className="hot_inner">
+                    < SubHotSevr />
+                    < SubHotSevr />
+                    < SubHotSevr />
+                    < SubHotSevr />
+                </div>
+            </div>
+        )
+    }
+})
+var SubHotSevr = React.createClass({
+    render:function(){
+        return (
+            <div className="sevr">
+                <h3>热门服推荐：</h3>
+                <div className="hot_sevr_btn"><span>游戏服2游戏服2.1</span></div>
+                <div className="hot_sevr_btn"><span>游戏服2.1</span></div>
+            </div>
+        )
+    }
+})
+//服务器
 var SevrGame = React.createClass({
     render: function() {
         return (
@@ -457,7 +535,8 @@ let SevrBox = React.createClass({
             newStatus:[],
             proTxt:'初始',
             text:'',
-            obj:{}
+            obj:{},
+            curIndex:0
         };
     },
     componentWillMount: function() {
@@ -512,16 +591,27 @@ let SevrBox = React.createClass({
         });
         // $('.btn_start').addClass('btn_starting');
     },
+    getTabClass:function(index){
+        // 判断点击的选项卡下标是否与编号相同
+        return index === this.state.curIndex ? "cur" :"";
+    },
     handleClick: function(index,sort) {
+        var that = this;
         if (sort == 'my' && !userProfile.userProfileJson().bid) {
-            this.refs.SevrGameBox.showLogin(function(){
-                $('.sevr_nav li').eq(2).click();
+            this.refs.SevrGameBox.showLogin(() => {
+                that.setState({
+                    show:sort,
+                    curIndex:index
+                });
             });
             return false;
         }
         //处理tab切换
-        mcAction.liCur($('.sevr_nav li'),index);
-        this.setState({show:sort});
+        //mcAction.liCur($('.sevr_nav li'),index);
+        this.setState({
+            show:sort,
+            curIndex:index
+        });
     },
     toDetal: function(obj) {
         //切换到服务器详情页
@@ -541,7 +631,7 @@ let SevrBox = React.createClass({
             <section className = "mc_server" >
                 < SevrShadow show={this.state.showshadow} txt={this.state.proTxt} />
                 < SevrDetal showdetal={this.state.showdetal} hiddenDetal={this.onHiddenDetal} obj={this.state.obj} />
-                < SevrNav data={this.state.data.sevrNav} click={this.handleClick}/>
+                < SevrNav data={this.state.data.sevrNav} click={this.handleClick} getTabClass={this.getTabClass}/>
                 < SevrGameBox ref='SevrGameBox' show={this.state.show} toDetal={this.toDetal} handleStart={this.handleStart} getAddress={this.props.getAddress} initSele={this.props.initSele}/>
             </section>
         );
